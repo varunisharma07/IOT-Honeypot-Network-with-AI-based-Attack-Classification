@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IoT Honeypot Dashboard</title>
+
+    <style>
+
+        body{
+            font-family:Arial;
+            background:#f2f2f2;
+            margin:40px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+        }
+
+        th{
+            background:#222;
+            color:white;
+            padding:10px;
+        }
+
+        td{
+            padding:8px;
+            border:1px solid #ddd;
+        }
+
+        h1{
+            text-align:center;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<h1>IoT Honeypot Dashboard</h1>
+
+<table>
+
+<tr>
+<th>ID</th>
+<th>Timestamp</th>
+<th>Event</th>
+<th>Source IP</th>
+<th>Username</th>
+<th>Password</th>
+<th>Command</th>
+</tr>
+
+{% for row in attacks %}
+
+<tr>
+
+<td>{{row.id}}</td>
+<td>{{row.timestamp}}</td>
+<td>{{row.eventid}}</td>
+<td>{{row.src_ip}}</td>
+<td>{{row.username}}</td>
+<td>{{row.password}}</td>
+<td>{{row.command}}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</body>
+</html>
