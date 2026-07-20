@@ -5,108 +5,84 @@ import joblib
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 
+
 # --------------------------
 # Load database
 # --------------------------
 
 conn = sqlite3.connect("database/honeypot.db")
-df = pd.read_sql_query("SELECT * FROM attacks", conn)
+
+df = pd.read_sql_query(
+    "SELECT command, attack_type FROM attacks",
+    conn
+)
+
+df["command"] = df["command"].str.strip().str.lower()
+
+
 conn.close()
 
-df = df.fillna("Unknown")
+
+print(df.head())
+
 
 # --------------------------
-# Create labels
+# Prepare data
 # --------------------------
 
-dangerous = [
-    "wget","curl","bash","python","perl",
-    "chmod","scp","ssh","busybox","nc"
-]
-
-medium = [
-    "cat","uname","ps","ifconfig","ip","netstat"
-]
-
-def threat_level(command):
-
-    command = str(command).lower()
-
-    for c in dangerous:
-        if c in command:
-            return 2
-
-    for c in medium:
-        if c in command:
-            return 1
-
-    return 0
-
-df["threat"] = df["command"].apply(threat_level)
-
 # --------------------------
-# Encode features
+# Prepare data
 # --------------------------
 
-encoders = {}
+X = df["command"]
+y = df["attack_type"]
 
-for col in [
-    "eventid",
-    "src_ip",
-    "username",
-    "password",
-    "command"
-]:
 
-    encoder = LabelEncoder()
+# Command encoder
+command_encoder = LabelEncoder()
 
-    df[col] = encoder.fit_transform(df[col].astype(str))
+X_encoded = command_encoder.fit_transform(X)
 
-    encoders[col] = encoder
 
-# --------------------------
-# Features
-# --------------------------
+# Attack type encoder
+attack_encoder = LabelEncoder()
 
-X = df[
-    [
-        "eventid",
-        "src_ip",
-        "username",
-        "password",
-        "command"
-    ]
-]
+y_encoded = attack_encoder.fit_transform(y)
 
-y = df["threat"]
+
+# Reshape input
+X_encoded = X_encoded.reshape(-1,1)
 
 # --------------------------
 # Train model
 # --------------------------
 
 model = RandomForestClassifier(
-    n_estimators=200,
+    n_estimators=100,
     random_state=42
 )
 
-model.fit(X, y)
+model.fit(
+    X_encoded,
+    y_encoded
+)
+
 
 # --------------------------
-# Save everything
+# Save model
 # --------------------------
 
-joblib.dump(model, "ai/model.pkl")
-joblib.dump(encoders, "ai/encoders.pkl")
+joblib.dump(model, "ai/attack_model.pkl")
 
-print("\n==============================")
-print("AI Training Completed")
-print("==============================")
+joblib.dump(
+    command_encoder,
+    "ai/command_encoder.pkl"
+)
 
-print("Samples :", len(df))
-print("Low     :", (y==0).sum())
-print("Medium  :", (y==1).sum())
-print("High    :", (y==2).sum())
+joblib.dump(
+    attack_encoder,
+    "ai/attack_encoder.pkl"
+)
 
-print("\nSaved:")
-print("✔ ai/model.pkl")
-print("✔ ai/encoders.pkl")
+
+print("Model trained successfully!")

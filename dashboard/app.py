@@ -4,6 +4,12 @@ import pandas as pd
 import os
 import sys
 import requests
+
+from flask_socketio import SocketIO
+
+app = Flask(__name__)
+socketio = SocketIO(app)
+
 # Allow importing from project root
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -558,78 +564,39 @@ def iot_alerts():
 
     return jsonify(alerts)
 
-@app.route("/api/timeline")
-def timeline():
+@app.route("/api/attack_types")
+def attack_types():
 
     conn = get_db()
     cur = conn.cursor()
 
-    timeline = []
-
-    # Honeypot events
     cur.execute("""
-        SELECT timestamp,eventid,src_ip
+        SELECT attack_type, COUNT(*) as count
         FROM attacks
-        ORDER BY id DESC
-        LIMIT 20
+        GROUP BY attack_type
     """)
 
-    for row in cur.fetchall():
-
-        timeline.append({
-            "time": row["timestamp"],
-            "icon": "🔴",
-            "event": f'{row["eventid"]} ({row["src_ip"]})'
-        })
-
-    # IoT events
-    cur.execute("""
-        SELECT timestamp,topic,payload
-        FROM iot_data
-        ORDER BY id DESC
-        LIMIT 20
-    """)
+    data = []
 
     for row in cur.fetchall():
-
-        icon = "📡"
-
-        if row["topic"] == "iot/temperature":
-            icon = "🌡"
-
-        elif row["topic"] == "iot/light":
-            icon = "💡"
-
-        elif row["topic"] == "iot/door":
-            icon = "🚪"
-
-        elif row["topic"] == "iot/camera":
-            icon = "📷"
-
-        timeline.append({
-            "time": row["timestamp"],
-            "icon": icon,
-            "event": row["payload"]
+        data.append({
+            "type": row["attack_type"],
+            "count": row["count"]
         })
 
     conn.close()
 
-    timeline.sort(
-        key=lambda x: x["time"],
-        reverse=True
-    )
-
-    return jsonify(timeline[:30])
+    return jsonify(data)
 # ============================================
 # Run
 # ============================================
 
 if __name__ == "__main__":
 
-    app.run(
-        debug=True,
-        host="0.0.0.0",
-        port=5000
-    )
-
+  socketio.run(
+    app,
+    debug=True,
+    host="0.0.0.0",
+    port=5000
+)
 

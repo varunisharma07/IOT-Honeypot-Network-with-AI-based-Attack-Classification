@@ -344,6 +344,7 @@ Reset
 <th>Command</th>
 <th>Threat</th>
 <th>Confidence</th>
+<th>Attack Type</th>
 <th>Score</th>
 
 </tr>
@@ -360,6 +361,7 @@ Reset
 <td>{{ row.username }}</td>
 <td>{{ row.password }}</td>
 <td>{{ row.command }}</td>
+<td>{{ row.attack_type }}</td>
 <td>
 
 {% if "LOW" in row.threat %}
@@ -966,6 +968,53 @@ setInterval(loadTimeline,3000);
 loadTimeline();
 
 </script>
+
+<canvas id="attackChart"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+fetch("/api/attack_types")
+.then(response => response.json())
+.then(data => {
+
+    let labels = data.map(x => x.type);
+    let values = data.map(x => x.count);
+
+
+    new Chart(
+        document.getElementById("attackChart"),
+        {
+            type: "pie",
+
+            data:{
+                labels: labels,
+
+                datasets:[{
+                    data: values
+                }]
+            }
+        }
+    );
+
+});
+
+</script>
+
+<script>
+
+setInterval(function(){
+    fetch("/api/latest")
+    .then(res=>res.json())
+    .then(data=>{
+        console.log("Latest Attack:",data);
+    });
+
+},5000);
+
+</script>
+
 </body>
 
 </html>
