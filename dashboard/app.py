@@ -8,6 +8,7 @@ import requests
 from flask_socketio import SocketIO
 
 app = Flask(__name__)
+socketio = SocketIO(app, cors_allowed_origins="*")
 socketio = SocketIO(app)
 
 # Allow importing from project root
