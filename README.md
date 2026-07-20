@@ -1,29 +1,29 @@
-# 🛡️ AI-Powered IoT Honeypot Network with Attack Classification
+# AI-Powered IoT Honeypot Network with Attack Classification
 
-## 📌 Overview
+##  Overview
 
 This project is an AI-powered cybersecurity monitoring system that combines an IoT device simulator, MQTT communication, a Cowrie SSH honeypot, machine learning-based threat classification, and a Flask web dashboard for real-time attack monitoring.
 
 ---
 
-## ✨ Features
+##  Features
 
-- 🔐 Cowrie SSH Honeypot
-- 📡 IoT Device Simulator using MQTT
-- 📥 MQTT Collector
-- 🤖 AI-based Threat Classification
-- 📊 Interactive Flask Dashboard
-- 🌍 World Attack Map
-- 🔔 Real-Time Attack Notifications
-- 📈 Live Charts
-- 📤 CSV Export
-- 🔍 Search Functionality
-- 🕒 Unified Security Timeline
-- 💾 SQLite Database
+-  Cowrie SSH Honeypot
+-  IoT Device Simulator using MQTT
+-  MQTT Collector
+-  AI-based Threat Classification
+-  Interactive Flask Dashboard
+-  World Attack Map
+-  Real-Time Attack Notifications
+-  Live Charts
+-  CSV Export
+-  Search Functionality
+-  Unified Security Timeline
+-  SQLite Database
 
 ---
 
-## 🛠 Technologies Used
+##  Technologies Used
 
 - Python
 - Flask
@@ -40,7 +40,7 @@ This project is an AI-powered cybersecurity monitoring system that combines an I
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ```
 IOT-Honeypot-Network/
@@ -58,7 +58,7 @@ IOT-Honeypot-Network/
 
 ---
 
-## 🚀 Installation
+##  Installation
 
 Clone the repository:
 
@@ -80,7 +80,7 @@ pip install -r requirements.txt
 
 ---
 
-## ▶️ Run the Project
+##  Run the Project
 
 Start the MQTT broker:
 
@@ -113,14 +113,162 @@ http://127.0.0.1:5000
 ```
 
 ---
+## System Architecture
+                     +----------------------+
+                     |     IoT Devices      |
+                     |----------------------|
+                     | Temperature Sensor   |
+                     | Light Sensor         |
+                     | Door Sensor          |
+                     | Camera Device        |
+                     +----------+-----------+
+                                |
+                                |
+                                v
+                     +----------------------+
+                     |     MQTT Broker      |
+                     |----------------------|
+                     | Mosquitto MQTT       |
+                     | IoT Message Routing  |
+                     +----------+-----------+
+                                |
+                                |
+                                v
+                +--------------------------------+
+                |       Data Collection Layer     |
+                |--------------------------------|
+                | mqtt_collector.py               |
+                | MQTT Subscriber                |
+                | Captures IoT Events            |
+                +---------------+----------------+
+                                |
+                                |
+                                v
+                +--------------------------------+
+                |       Honeypot Database        |
+                |--------------------------------|
+                | SQLite (honeypot.db)            |
+                |                                |
+                | Tables:                        |
+                | - attacks                      |
+                | - iot_data                     |
+                +---------------+----------------+
+                                |
+              +-----------------+------------------+
+              |                                    |
+              v                                    v
 
-## 📷 Screenshots
+    +-----------------------+          +----------------------+
+    |  AI Attack Classifier |          |  Flask Dashboard     |
+    |-----------------------|          |----------------------|
+    | Random Forest Model   |          | SOC Monitoring UI    |
+    | Feature Processing    |          | Real-Time Analytics  |
+    | Attack Prediction     |          | Attack Visualization|
+    +-----------+-----------+          +----------+-----------+
+                |                                 |
+                |                                 |
+                v                                 v
 
-Add screenshots here after uploading them.
+    +-----------------------+          +----------------------+
+    | Attack Classification |          | Security Monitoring  |
+    |-----------------------|          |----------------------|
+    | Reconnaissance       |          | Attack Timeline      |
+    | User Enumeration     |          | IoT Status           |
+    | Process Discovery    |          | Threat Levels        |
+    | Suspicious Activity  |          | Reports Export       |
+    | IoT Manipulation     |          | Attack Statistics    |
+    +-----------------------+          +----------------------+
+
+
+                                |
+                                v
+
+                     +----------------------+
+                     | Security Analyst     |
+                     |----------------------|
+                     | Monitors attacks    |
+                     | Analyzes threats    |
+                     | Generates reports   |
+                     +----------------------+
 
 ---
 
-## 👩‍💻 Author
+## 🔹 Architecture Components
+
+### 1. IoT Simulation Layer
+- Simulates IoT devices such as:
+  - Temperature sensors
+  - Light sensors
+  - Door sensors
+  - Camera devices
+- Generates normal and malicious IoT activity.
+
+### 2. MQTT Communication Layer
+- Uses MQTT protocol for IoT communication.
+- Mosquitto broker handles message exchange between devices and collector.
+
+### 3. Honeypot Collection Layer
+- Captures attacker interactions.
+- Collects:
+  - Commands executed
+  - Login attempts
+  - Source IP addresses
+  - IoT device events
+
+### 4. Database Layer
+SQLite database stores:
+
+**attacks table**
+- Timestamp
+- Source IP
+- Username
+- Password
+- Commands
+- Attack Type
+
+**iot_data table**
+- Timestamp
+- Topic
+- Payload
+
+
+### 5. AI Attack Classification Layer
+
+Machine Learning model analyzes collected activity and classifies attacks into:
+
+- 🔴 Suspicious Activity
+- 🔵 Reconnaissance
+- 🟡 User Enumeration
+- 🟣 Process Discovery
+- 🟢 IoT Command Manipulation
+- 🟠 IoT Sensor Activity
+- ⚪ Normal IoT Data
+
+
+### 6. Dashboard Layer
+
+Flask-based Security Operations Dashboard provides:
+
+- Total attacks detected
+- Unique attackers
+- Attack type distribution
+- Threat analysis
+- IoT device monitoring
+- Attack timeline
+- Data export reports
+
+
+### 7. Security Analyst Layer
+
+The analyst can:
+
+- Monitor real-time attacks
+- Analyze attacker behavior
+- Identify attack patterns
+- Generate security reports
+---
+
+## Author
 
 **Varuni Sharma**
 
